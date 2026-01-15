@@ -1,0 +1,199 @@
+--- CONTACTS FIELDS ---
+ID: 214681, Name: Должность, Type: text
+ID: 214683, Name: Телефон, Type: multitext
+  Options:
+    - 115921: WORK (sort=2)
+    - 115923: WORKDD (sort=4)
+    - 115925: MOB (sort=6)
+    - 115927: FAX (sort=8)
+    - 115929: HOME (sort=10)
+    - 115931: OTHER (sort=12)
+ID: 214685, Name: Email, Type: multitext
+  Options:
+    - 115933: WORK (sort=2)
+    - 115935: PRIV (sort=4)
+    - 115937: OTHER (sort=6)
+ID: 522483, Name: Контактный номер 2, Type: text
+ID: 522485, Name: Контактный номер 1, Type: text
+ID: 987339, Name: Пользовательское соглашение, Type: checkbox
+ID: 995927, Name: Telegram Username, Type: text
+ID: 995929, Name: Telegram ID, Type: text
+ID: 995931, Name: Язык общения, Type: text
+ID: 995933, Name: Кампус, Type: select
+  Options:
+    - 1222903: Yashnobod Campus (sort=1)
+    - 1222901: MU Campus (sort=500)
+ID: 995939, Name: Ответственный менеджер, Type: text
+
+--- LEADS FIELDS ---
+ID: 214691, Name: utm_content, Type: tracking_data
+ID: 214693, Name: utm_medium, Type: tracking_data
+ID: 214695, Name: utm_campaign, Type: tracking_data
+ID: 214697, Name: utm_source, Type: tracking_data
+ID: 214699, Name: utm_term, Type: tracking_data
+ID: 214701, Name: utm_referrer, Type: tracking_data
+ID: 214703, Name: roistat, Type: tracking_data
+ID: 214705, Name: referrer, Type: tracking_data
+ID: 214707, Name: openstat_service, Type: tracking_data
+ID: 214709, Name: openstat_campaign, Type: tracking_data
+ID: 214711, Name: openstat_ad, Type: tracking_data
+ID: 214713, Name: openstat_source, Type: tracking_data
+ID: 214715, Name: from, Type: tracking_data
+ID: 214717, Name: gclientid, Type: tracking_data
+ID: 214719, Name: _ym_uid, Type: tracking_data
+ID: 214721, Name: _ym_counter, Type: tracking_data
+ID: 214723, Name: gclid, Type: tracking_data
+ID: 214725, Name: yclid, Type: tracking_data
+ID: 214727, Name: fbclid, Type: tracking_data
+ID: 331559, Name: Дата встречи, Type: date
+ID: 486249, Name: Оплата, Type: multiselect
+  Options:
+    - 274133: Февраль (sort=1)
+    - 274153: Март (sort=2)
+    - 274155: Апрель (sort=3)
+    - 274157: Май (sort=4)
+    - 274159: Июнь (sort=5)
+    - 274161: Июль (sort=6)
+    - 274163: Август (sort=7)
+    - 274165: Сентябрь (sort=8)
+    - 274167: Октябрь (sort=9)
+    - 274169: Ноябрь (sort=10)
+    - 274171: Декабрь (sort=11)
+    - 274131: Январь (sort=500)
+ID: 487283, Name: Международная школа, Type: checkbox
+ID: 487285, Name: Русская школа, Type: checkbox
+ID: 487287, Name: Детский сад, Type: checkbox
+ID: 487341, Name: Классы русской школы, Type: select
+  Options:
+    - 274947: 1Б - Саниям Талиповна (sort=1)
+    - 283889: 2А - Божко Елена Сергеевна (sort=2)
+    - 283891: 2Б - Шаймуратова Мунира Султанмуратовна (sort=3)
+    - 283893: 3А - Киямова Ирина Валерьевна (sort=4)
+    - 283895: 3Б - Максудова Алсу Ириковна (sort=5)
+    - 283897: 4А - Азимова Земфира Анваровна (sort=6)
+    - 283899: 4Б - Грищенко Ольга Вениаминовна (sort=7)
+    - 283901: 5А - Разгон Илья Леонидович (sort=8)
+    - 283903: 5Б - Сотволдиев Бобур Бахтиерович (sort=9)
+    - 283905: 6А - Замараев Артем Александрович (sort=10)
+    - 283907: 6Б - Дана Абдинасировна (sort=11)
+    - 283909: 7А - Башарова Лолита Шамильевна (sort=12)
+    - 283911: 7Б - Рахматуллаева Роза Аманжановна (sort=13)
+    - 283913: 8А - Александр Игоревич (sort=14)
+    - 283915: 8Б - Вазира Умиджоновна (sort=15)
+    - 283917: 9А - Юсупбекова Саида Абдуллаевна (sort=16)
+    - 283919: 9Б - Ильхом Ибрахимович (sort=17)
+    - 283921: 10А - Аглямова Юлдуз Захировна (sort=18)
+    - 283923: 11А - Артыкова Фарида Джураевна (sort=19)
+    - 1063921: 10Б (sort=20)
+    - 1214609: Не относится (sort=21)
+    - 274945: 1А - Галина Маратовна (sort=500)
+ID: 487345, Name: Классы IB, Type: select
+  Options:
+    - 283519: PYP1A (sort=1)
+    - 283521: PYP1B (sort=2)
+    - 283523: PYP2A (sort=3)
+    - 283525: PYP2B (sort=4)
+    - 283527: PYP3A (sort=5)
+    - 283529: PYP3B (sort=6)
+    - 283531: PYP4A (sort=7)
+    - 283533: PYP4B (sort=8)
+    - 283535: PYP5A (sort=9)
+    - 283537: PYP5B (sort=10)
+    - 283541: MYP2 (sort=11)
+    - 283543: MYP3 (sort=12)
+    - 283545: MYP4 (sort=13)
+    - 283547: MYP5 (sort=14)
+    - 283549: DP1A (sort=15)
+    - 283551: DP1B (sort=16)
+    - 283553: DP2 (sort=17)
+    - 1064003: MYP1A (sort=18)
+    - 1064005: MYP1B (sort=19)
+    - 1071676: DP 2A (sort=20)
+    - 1071678: DP 2B. (sort=21)
+    - 1214611: Не относится (sort=22)
+    - 274949: KG (sort=500)
+ID: 498763, Name: Группы детского сада, Type: select
+  Options:
+    - 285163: Бусинки (sort=1)
+    - 285165: Лидеры (sort=2)
+    - 285167: Знатоки (sort=3)
+    - 285169: Умники (sort=4)
+    - 285171: Winners (sort=5)
+    - 285173: Звездочки (sort=6)
+    - 285175: Вундеркинды (sort=7)
+    - 1214615: K1 (sort=8)
+    - 1214617: K2 (sort=9)
+    - 1214619: K3 (sort=10)
+    - 1214621: K4 RU (sort=11)
+    - 1214625: K4 ENG (sort=12)
+    - 1214623: K5 (sort=13)
+    - 1214613: Не относится (sort=14)
+    - 285161: Эрудиты (sort=500)
+ID: 906535, Name: Школа, Type: text
+ID: 973433, Name: GA UTM, Type: text
+ID: 973529, Name: GA UTM, Type: text
+ID: 973531, Name: GA UTM, Type: text
+ID: 973533, Name: GA UTM, Type: text
+ID: 985893, Name: Дата рождения, Type: date
+ID: 985895, Name: Текущее образование и класс, Type: textarea
+ID: 985897, Name: Ф.И.О, Type: text
+ID: 988809, Name: Источник, Type: select
+  Options:
+    - 1223827: Telegram (sort=1)
+    - 1218241: Facebook (sort=2)
+    - 1218243: Веб-сайт (sort=3)
+    - 1218245: Поисковая система (Google, Yandex) (sort=4)
+    - 1218247: Рекомендация (друзья, семья) (sort=5)
+    - 1218239: Instagram (sort=500)
+ID: 991841, Name: Возраст детей, Type: text
+ID: 995887, Name: Интересующая программа, Type: select
+  Options:
+    - 1222833: Russian School (sort=1)
+    - 1222835: IB School (sort=2)
+    - 1222837: Consultation (sort=3)
+    - 1222831: Kindergarden (sort=500)
+ID: 995889, Name: Имя ребенка #1, Type: text
+ID: 995891, Name: Возраст ребенка #1, Type: date
+ID: 995893, Name: Программа ребенка #1, Type: select
+  Options:
+    - 1222841: Russian School (sort=1)
+    - 1222843: IB School (sort=2)
+    - 1222845: Consultation (sort=3)
+    - 1222839: Kindergarden (sort=500)
+ID: 995897, Name: Имя ребенка #2, Type: text
+ID: 995899, Name: Возраст ребенка #2, Type: date
+ID: 995903, Name: Программа ребенка #2, Type: select
+  Options:
+    - 1222861: Russian School (sort=1)
+    - 1222863: IB School (sort=2)
+    - 1222865: Consultation (sort=3)
+    - 1222859: Kindergarden (sort=500)
+ID: 995907, Name: Когда клиент планирует поступление, Type: select
+  Options:
+    - 1222873: В следующем учебном году (sort=1)
+    - 1222875: Пока просто изучает варианты (sort=2)
+    - 1222871: В этом семестре (sort=500)
+ID: 995909, Name: Имя ребенка #3, Type: text
+ID: 995911, Name: Возраст ребенка #3, Type: date
+ID: 995915, Name: Программа ребенка #3, Type: select
+  Options:
+    - 1222879: Russian School (sort=1)
+    - 1222881: IB School (sort=2)
+    - 1222883: Consultation (sort=3)
+    - 1222877: Kindergarden (sort=500)
+ID: 995919, Name: Имя ребенка #4, Type: text
+ID: 995921, Name: Возраст ребенка #4, Type: date
+ID: 995923, Name: Программа ребенка #4, Type: select
+  Options:
+    - 1222891: Russian School (sort=1)
+    - 1222893: IB School (sort=2)
+    - 1222895: Consultation (sort=3)
+    - 1222889: Kindergarden (sort=500)
+ID: 995937, Name: Количество детей, Type: text
+ID: 995943, Name: Срок поступления, Type: text
+ID: 995947, Name: Дата создания карточки, Type: date
+ID: 996203, Name: Кампус, Type: select
+  Options:
+    - 1223825: MU Campus (sort=1)
+    - 1223823: Yashnabod Campus (sort=500)
+ID: 996211, Name: Оплачивают за год VIP *, Type: checkbox
