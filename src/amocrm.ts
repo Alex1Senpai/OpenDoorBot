@@ -85,17 +85,6 @@ export function createAmoClient(config: AmoConfig): AmoClient {
     return res;
   }
 
-  async function getInitialStatusId(pool: pg.Pool): Promise<number> {
-    if (config.initialStatusId) return config.initialStatusId;
-    const url = new URL(`/api/v4/leads/pipelines/${config.pipelineId}`, config.baseUrl);
-    const res = await amoFetch({ pool, input: url });
-    if (!res.ok) throw new Error(`amoCRM pipeline fetch failed: ${res.status} ${await res.text()}`);
-    const json = (await res.json()) as { _embedded?: { statuses?: Array<{ id: number }> } };
-    const statusId = json._embedded?.statuses?.[0]?.id;
-    if (!statusId) throw new Error("Cannot resolve initial pipeline status id.");
-    return statusId;
-  }
-
   async function createContact(params: { pool: pg.Pool; name?: string; email?: string; phone?: string }): Promise<number> {
     const { pool, name, email, phone } = params;
     const url = new URL("/api/v4/contacts", config.baseUrl);
@@ -179,7 +168,6 @@ export function createAmoClient(config: AmoConfig): AmoClient {
 
   async function createLead(params: { pool: pg.Pool; name: string }): Promise<number> {
     const { pool, name } = params;
-    const statusId = await getInitialStatusId(pool);
     const url = new URL("/api/v4/leads", config.baseUrl);
     const res = await amoFetch({
       pool,
@@ -190,7 +178,7 @@ export function createAmoClient(config: AmoConfig): AmoClient {
           {
             name,
             pipeline_id: config.pipelineId,
-            status_id: statusId
+            ...(config.initialStatusId ? { status_id: config.initialStatusId } : {})
           }
         ])
       }
