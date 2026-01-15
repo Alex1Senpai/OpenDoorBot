@@ -27,18 +27,45 @@ async function main() {
   app.post("/webhooks/typeform", express.raw({ type: "*/*", limit: "2mb" }), async (req, res) => {
     try {
       const signaturePresent = !!req.header("Typeform-Signature");
+      const raw = getRawBody(req);
+      console.log(
+        JSON.stringify({
+          msg: "typeform_webhook_http_received",
+          content_type: req.header("content-type"),
+          content_length: req.header("content-length"),
+          raw_bytes: raw.byteLength,
+          signature_present: signaturePresent
+        })
+      );
       if (config.typeform.webhookSecret) {
         const sig = req.header("Typeform-Signature") ?? undefined;
-        const raw = getRawBody(req);
         const ok = typeformIsSignatureValid({ secret: config.typeform.webhookSecret, rawBody: raw, signatureHeader: sig });
-        if (!ok) return res.status(401).json({ ok: false, error: "Invalid signature" });
+        if (!ok) {
+          console.log(JSON.stringify({ msg: "typeform_webhook_rejected", reason: "invalid_signature" }));
+          return res.status(401).json({ ok: false, error: "Invalid signature" });
+        }
       }
 
-      const raw = getRawBody(req);
-      const payload = JSON.parse(raw.toString("utf8")) as TypeformWebhookPayload;
+      let payload: TypeformWebhookPayload;
+      try {
+        payload = JSON.parse(raw.toString("utf8")) as TypeformWebhookPayload;
+      } catch {
+        console.log(JSON.stringify({ msg: "typeform_webhook_rejected", reason: "invalid_json" }));
+        return res.status(400).json({ ok: false, error: "Invalid JSON" });
+      }
       const responseToken = payload.form_response?.token;
       const formId = payload.form_response?.form_id;
-      if (!responseToken || !formId) return res.status(400).json({ ok: false, error: "Invalid payload" });
+      if (!responseToken || !formId) {
+        console.log(
+          JSON.stringify({
+            msg: "typeform_webhook_rejected",
+            reason: "invalid_payload",
+            event_id: payload.event_id,
+            event_type: payload.event_type
+          })
+        );
+        return res.status(400).json({ ok: false, error: "Invalid payload" });
+      }
 
       console.log(
         JSON.stringify({
@@ -113,7 +140,8 @@ async function main() {
       console.error(
         JSON.stringify({
           msg: "typeform_webhook_error",
-          error: message
+          error: message,
+          signature_present: !!req.header("Typeform-Signature")
         })
       );
       return res.status(500).json({ ok: false, error: message });

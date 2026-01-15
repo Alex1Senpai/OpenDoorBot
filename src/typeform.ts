@@ -7,6 +7,9 @@ export type TypeformWebhookPayload = {
     landing_id?: string;
     submitted_at?: string;
     hidden?: Record<string, string>;
+    definition?: {
+      fields?: Array<{ id: string; ref?: string; title?: string }>;
+    };
     answers?: Array<{
       type: string;
       field: { id: string; ref?: string };
@@ -44,9 +47,17 @@ export function extractContactBits(payload: TypeformWebhookPayload): { name?: st
 
 export function stringifyAnswers(payload: TypeformWebhookPayload): string {
   const answers = payload.form_response.answers ?? [];
+  const definitionFields = payload.form_response.definition?.fields ?? [];
+  const titleByKey = new Map<string, string>();
+  for (const f of definitionFields) {
+    if (f.ref && f.title) titleByKey.set(f.ref, f.title);
+    if (f.id && f.title) titleByKey.set(f.id, f.title);
+  }
+
   const parts: string[] = [];
   for (const a of answers) {
     const key = a.field.ref ?? a.field.id;
+    const title = titleByKey.get(key);
     let value: string | undefined;
     if (a.text) value = a.text;
     else if (a.email) value = a.email;
@@ -57,7 +68,7 @@ export function stringifyAnswers(payload: TypeformWebhookPayload): string {
     else if (a.choice?.label) value = a.choice.label;
     else if (a.choices?.labels?.length) value = a.choices.labels.join(", ");
     else value = "(unsupported)";
-    parts.push(`${key}: ${value}`);
+    parts.push(`${title ?? key}: ${value}`);
   }
 
   const hidden = payload.form_response.hidden ?? {};
@@ -70,4 +81,3 @@ export function stringifyAnswers(payload: TypeformWebhookPayload): string {
 
   return parts.join("\n");
 }
-
