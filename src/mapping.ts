@@ -55,13 +55,20 @@ const DESIRED_PROGRAM_ENUM = {
   consultation: 1222837
 };
 
+function toAmoDateTime(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const s = value.trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  return `${s}T00:00:00+00:00`;
+}
+
 function getAnswerString(a: NonNullable<TypeformWebhookPayload["form_response"]["answers"]>[number]): string | undefined {
   if (a.text) return a.text;
   if (a.email) return a.email;
   if (a.phone_number) return a.phone_number;
   if (typeof a.boolean === "boolean") return a.boolean ? "true" : "false";
   if (typeof a.number === "number") return String(a.number);
-  if (a.date) return a.date;
+  if (a.date) return toAmoDateTime(a.date);
   if (a.choice?.label) return a.choice.label;
   if (a.choices?.labels?.length) return a.choices.labels.join(", ");
   return undefined;
@@ -102,7 +109,7 @@ export function buildLeadCustomFields(payload: TypeformWebhookPayload): LeadCust
 
     if (DEFAULT_REFS.fullName.includes(key)) put({ fieldId: LEAD_FIELD.fullName, value: a.text });
     if (DEFAULT_REFS.childName.includes(key)) put({ fieldId: LEAD_FIELD.childName1, value: a.text });
-    if (DEFAULT_REFS.childDob.includes(key)) put({ fieldId: LEAD_FIELD.childDob1, value: a.date });
+    if (DEFAULT_REFS.childDob.includes(key)) put({ fieldId: LEAD_FIELD.childDob1, value: toAmoDateTime(a.date) });
     if (DEFAULT_REFS.desiredProgram.includes(key)) put({ fieldId: LEAD_FIELD.desiredProgram, enumId: mapDesiredProgramEnum(a.choice?.label) });
     if (DEFAULT_REFS.currentEducation.includes(key)) put({ fieldId: LEAD_FIELD.currentEducation, value: a.choice?.label });
   }
