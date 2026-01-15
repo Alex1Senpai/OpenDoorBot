@@ -37,11 +37,22 @@ function toInt(name: string, value: string | undefined): number | undefined {
   return n;
 }
 
+function normalizeBaseUrl(name: string, raw: string): string {
+  const trimmed = raw.trim();
+  const withScheme = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  try {
+    const u = new URL(withScheme);
+    return `${u.protocol}//${u.host}`;
+  } catch {
+    throw new Error(`Invalid URL in env var ${name}`);
+  }
+}
+
 export function getConfig(): AppConfig {
   const port = toInt("PORT", readEnv("PORT")) ?? 3000;
   const databaseUrl = mustReadEnv("DATABASE_URL");
 
-  const amoBaseUrl = readEnv("AMOCRM_BASE_URL") ?? "https://example.amocrm.ru";
+  const amoBaseUrl = normalizeBaseUrl("AMOCRM_BASE_URL", readEnv("AMOCRM_BASE_URL") ?? "https://example.amocrm.ru");
   const pipelineId = toInt("AMOCRM_PIPELINE_ID", readEnv("AMOCRM_PIPELINE_ID")) ?? 10482294;
 
   return {
@@ -79,4 +90,3 @@ export function typeformIsSignatureValid(params: {
   if (expectedBuf.length !== gotBuf.length) return false;
   return crypto.timingSafeEqual(expectedBuf, gotBuf);
 }
-
