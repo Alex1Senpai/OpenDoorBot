@@ -26,6 +26,7 @@ async function main() {
 
   app.post("/webhooks/typeform", express.raw({ type: "*/*", limit: "2mb" }), async (req, res) => {
     try {
+      const signaturePresent = !!req.header("Typeform-Signature");
       if (config.typeform.webhookSecret) {
         const sig = req.header("Typeform-Signature") ?? undefined;
         const raw = getRawBody(req);
@@ -39,6 +40,18 @@ async function main() {
       const formId = payload.form_response?.form_id;
       if (!responseToken || !formId) return res.status(400).json({ ok: false, error: "Invalid payload" });
 
+      console.log(
+        JSON.stringify({
+          msg: "typeform_webhook_received",
+          event_id: payload.event_id,
+          event_type: payload.event_type,
+          form_id: formId,
+          token: responseToken,
+          landing_id: payload.form_response?.landing_id,
+          signature_present: signaturePresent
+        })
+      );
+
       const existingByToken = await getSubmissionByToken(db.pool, responseToken);
       const landingId = payload.form_response.landing_id;
       const existing =
@@ -46,6 +59,15 @@ async function main() {
         (landingId ? await getLatestSubmissionByLandingId({ pool: db.pool, formId, landingId }) : undefined);
 
       if (existing && payload.event_id && existing.last_event_id === payload.event_id) {
+        console.log(
+          JSON.stringify({
+            msg: "typeform_webhook_deduped",
+            event_id: payload.event_id,
+            form_id: formId,
+            token: responseToken,
+            amo_lead_id: existing.amo_lead_id
+          })
+        );
         return res.status(200).json({ ok: true, leadId: existing.amo_lead_id ? Number(existing.amo_lead_id) : undefined });
       }
 
@@ -75,9 +97,25 @@ async function main() {
         lastPayload: payload
       });
 
+      console.log(
+        JSON.stringify({
+          msg: "typeform_webhook_processed",
+          event_id: payload.event_id,
+          form_id: formId,
+          token: responseToken,
+          amo_lead_id: leadId,
+          amo_contact_id: contactId
+        })
+      );
       return res.status(200).json({ ok: true, leadId, contactId });
     } catch (e) {
       const message = e instanceof Error ? e.message : "Unknown error";
+      console.error(
+        JSON.stringify({
+          msg: "typeform_webhook_error",
+          error: message
+        })
+      );
       return res.status(500).json({ ok: false, error: message });
     }
   });
