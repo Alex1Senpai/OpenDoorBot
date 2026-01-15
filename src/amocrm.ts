@@ -99,24 +99,7 @@ export function createAmoClient(config: AmoConfig): AmoClient {
   async function createContact(params: { pool: pg.Pool; name?: string; email?: string; phone?: string }): Promise<number> {
     const { pool, name, email, phone } = params;
     const url = new URL("/api/v4/contacts", config.baseUrl);
-    const customFieldsValues: Array<{
-      field_id: number;
-      values: Array<{ value: string; enum_id?: number }>;
-    }> = [];
-
-    if (phone) {
-      customFieldsValues.push({
-        field_id: 214683,
-        values: [{ value: phone, enum_id: 115921 }]
-      });
-    }
-
-    if (email) {
-      customFieldsValues.push({
-        field_id: 214685,
-        values: [{ value: email, enum_id: 115933 }]
-      });
-    }
+    const customFieldsValues = buildContactCustomFields({ phone, email });
 
     const res = await amoFetch({
       pool,
@@ -136,6 +119,62 @@ export function createAmoClient(config: AmoConfig): AmoClient {
     const contactId = json._embedded?.contacts?.[0]?.id;
     if (!contactId) throw new Error("amoCRM did not return created contact id.");
     return contactId;
+  }
+
+  function buildContactCustomFields(params: { phone?: string; email?: string }): Array<{
+    field_id: number;
+    values: Array<{ value: string; enum_id?: number }>;
+  }> {
+    const { phone, email } = params;
+    const customFieldsValues: Array<{
+      field_id: number;
+      values: Array<{ value: string; enum_id?: number }>;
+    }> = [];
+
+    if (phone) {
+      customFieldsValues.push({
+        field_id: 214683,
+        values: [{ value: phone, enum_id: 115921 }]
+      });
+    }
+
+    if (email) {
+      customFieldsValues.push({
+        field_id: 214685,
+        values: [{ value: email, enum_id: 115933 }]
+      });
+    }
+
+    return customFieldsValues;
+  }
+
+  async function updateContact(params: {
+    pool: pg.Pool;
+    contactId: number;
+    name?: string;
+    email?: string;
+    phone?: string;
+  }): Promise<void> {
+    const { pool, contactId, name, email, phone } = params;
+    const customFieldsValues = buildContactCustomFields({ phone, email });
+    if (!name && !customFieldsValues.length) return;
+
+    const url = new URL("/api/v4/contacts", config.baseUrl);
+    const res = await amoFetch({
+      pool,
+      input: url,
+      init: {
+        method: "PATCH",
+        body: JSON.stringify([
+          {
+            id: contactId,
+            ...(name ? { name } : {}),
+            ...(customFieldsValues.length ? { custom_fields_values: customFieldsValues } : {})
+          }
+        ])
+      }
+    });
+    if (!res.ok) throw new Error(`amoCRM contact update failed: ${res.status} ${await res.text()}`);
   }
 
   async function createLead(params: { pool: pg.Pool; name: string }): Promise<number> {
@@ -216,17 +255,28 @@ export function createAmoClient(config: AmoConfig): AmoClient {
   }): Promise<{ leadId: number; contactId?: number }> {
     const { pool, existingLeadId, existingContactId, typeformSummary, leadCustomFields, contact } = params;
 
-    let contactId = existingContactId;
-    if (!contactId && (contact.email || contact.phone || contact.name)) {
-      contactId = await createContact({ pool, name: contact.name, email: contact.email, phone: contact.phone });
-    }
-
     const leadId =
       existingLeadId ??
       (await createLead({
         pool,
         name: `Typeform: ${contact.email ?? contact.phone ?? "submission"}`
       }));
+
+    const isNewLead = !existingLeadId;
+    const hasContactBits = !!(contact.email || contact.phone || contact.name);
+
+    let contactId: number | undefined;
+    if (isNewLead) {
+      if (hasContactBits) contactId = await createContact({ pool, name: contact.name, email: contact.email, phone: contact.phone });
+    } else {
+      contactId = existingContactId;
+      if (!contactId && hasContactBits) {
+        contactId = await createContact({ pool, name: contact.name, email: contact.email, phone: contact.phone });
+      }
+      if (contactId && hasContactBits) {
+        await updateContact({ pool, contactId, name: contact.name, email: contact.email, phone: contact.phone });
+      }
+    }
 
     if (contactId) await linkLeadToContact({ pool, leadId, contactId });
     if (leadCustomFields?.length) await updateLeadCustomFields({ pool, leadId, customFields: leadCustomFields });
